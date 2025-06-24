@@ -31,27 +31,27 @@ class IMGWorker:
 
     def get_white_mask(self) -> np.ndarray:
         """
-        Выделяет белые объекты на изображении
+        Выделяет синие объекты на изображении
 
         Механика:
             - Увеличиваем яркость изображения
             - Преобразовываем в HSV
-            - Создаем маску для белого цвета
+            - Создаем маску для синего цвета
             - Удаляем шум и замыкания разрывов
 
         Returns:
             - clean_mask(numpy.ndarray) - бинарная маска
-                                          с выделенными белыми объектами
+                                          с выделенными синими объектами
         """
         # img = self.increase_img_brightness()
         hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
-        lower_white = np.array([0, 0, 200])
-        upper_white = np.array([180, 30, 255])
+        lower_blue = np.array([100, 100, 50])
+        upper_blue = np.array([130, 255, 255])
 
-        white_mask = cv2.inRange(hsv, lower_white, upper_white)
+        mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        clean_mask = cv2.morphologyEx(white_mask, cv2.MORPH_OPEN, kernel)
+        clean_mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
         clean_mask = cv2.morphologyEx(clean_mask, cv2.MORPH_CLOSE, kernel)
 
         return clean_mask

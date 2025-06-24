@@ -7,7 +7,7 @@ from img import IMGWorker
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
 
 ser = serial.Serial('', 9600, timeout=1)
 
@@ -29,8 +29,8 @@ while True:
         highlighted_img = img_worker.increase_img_brightness()
         trajectory = img_worker.draw_trajectory()
 
-        cv2.imshow('Finded contours', output_img)
-        cv2.imshow('Trajectory', trajectory)
+        # cv2.imshow('Finded contours', output_img)
+        # cv2.imshow('Trajectory', trajectory)
 
         direction = img_worker.analyze_trajectory()
 
