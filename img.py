@@ -145,9 +145,9 @@ class IMGWorker:
         threshold = 0.1
 
         if abs(slope) < threshold:
-            current_direction = "STRAIGHT"
+            current_direction = "RIGHT"
         elif slope > 0:
             current_direction = "LEFT"
         else:
-            current_direction = "RIGHT"
+            current_direction = "STRAIGHT"
         return current_direction
