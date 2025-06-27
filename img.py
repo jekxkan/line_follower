@@ -8,7 +8,7 @@ class IMGWorker:
         Args:
             - frame(numpy.ndarray) - цветное изображение в формате BGR
         """
-        self.frame = frame
+        self.frame = frame[:frame.shape[0]//2, :]
 
 
     def increase_img_brightness(self) -> np.ndarray:

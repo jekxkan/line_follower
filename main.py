@@ -7,11 +7,12 @@ from img import IMGWorker
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-video = cv2.VideoCapture(1)
+
+video = cv2.VideoCapture(0)
 video.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 video.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
-ser = serial.Serial('', 9600, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
 
 command = {
     'No line': 'STOP',
@@ -26,6 +27,10 @@ while True:
     try:
         ret, frame = video.read()
 
+        if not ret or frame is None:
+            logging.warning("Пустой кадр")
+            continue
+
         img_worker = IMGWorker(frame)
         output_img = img_worker.draw_white_objects()
         trajectory = img_worker.draw_trajectory()
@@ -35,18 +40,7 @@ while True:
 
         direction = img_worker.analyze_trajectory()
 
-        # if last_direction is None:
-        #     last_direction = direction
-        #     counter = 1
-        #     logging.info(f'Текущее направление: {last_direction}')
-        # elif direction == last_direction:
-        #     counter = 0
-        # else:
-        #     counter += 1
-        #     if counter >= 5:
-        #         last_direction = direction
-        #         counter = 0
-        logging.info(f'Направление изменилось на: {direction}')
+        logging.info(f'Направление: {direction}')
 
         ser.write((command[direction]).encode())
         logging.info(f'Отправили команду {direction}')
@@ -58,6 +52,7 @@ while True:
 
     except Exception as e:
         logging.error(f'Ошибка: {e}')
+
 ser.close()
 video.release()
 cv2.destroyAllWindows()
