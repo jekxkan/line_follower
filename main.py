@@ -14,15 +14,6 @@ video.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
 ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
 
-command = {
-    'No line': 'STOP',
-    'STRAIGHT': 'Go forward',
-    'RIGHT': 'Go right',
-    'LEFT': 'Go left'
-}
-last_direction = ''
-counter = 0
-
 while True:
     try:
         ret, frame = video.read()
@@ -42,7 +33,10 @@ while True:
 
         logging.info(f'Направление: {direction}')
 
-        ser.write((command[direction]).encode())
+        if direction == 'No line':
+            direction = 'STOP'
+
+        ser.write(direction.encode())
         logging.info(f'Отправили команду {direction}')
         response = ser.readline().decode().strip()
         logging.info(f'Ответ ардуино: {response}')
